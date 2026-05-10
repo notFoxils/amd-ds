@@ -1,0 +1,16 @@
+[package]
+name = "amd-ds"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+amd-ds-common = { path = "../common" }
+
+serde = { workspace = true, optional = true }
+
+scraper.workspace = true
+
+snafu.workspace = true
+
+[features]
+serde = ["dep:serde", "scraper/serde"]
