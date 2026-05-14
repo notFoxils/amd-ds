@@ -6,7 +6,7 @@ use std::{
 
 use amd_ds::{
     config::DriverDownloadLinkScraperConfig,
-    driver_download_page::DriverDownloadPage,
+    driver_page::DriverPage,
     scrape::{ScrapeDriverDownloadLinkError, scrape_driver_download_link},
 };
 use amd_ds_common::{RequestError, request};
@@ -33,11 +33,11 @@ pub enum DownloadLatestDriverError {
 pub fn download_latest_driver(
     config: &DownloadLatestDriverConfig,
     driver_download_link_scraper_config: &DriverDownloadLinkScraperConfig,
-    driver_download_page: &DriverDownloadPage,
+    driver_page: &DriverPage,
     output_file_path: &Path,
 ) -> Result<(), DownloadLatestDriverError> {
     let driver_download_link =
-        scrape_driver_download_link(driver_download_link_scraper_config, driver_download_page)
+        scrape_driver_download_link(driver_download_link_scraper_config, driver_page)
             .context(ScrapeDriverDownloadLinkSnafu)?;
 
     let driver_download_request_data =

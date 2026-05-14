@@ -1,6 +1,6 @@
 use amd_ds::{
     config::DriverVersionScraperConfig,
-    driver_download_page::DriverDownloadPage,
+    driver_page::DriverPage,
     scrape::{ScrapeDriverVersionError, scrape_driver_version},
 };
 use snafu::{ResultExt, Snafu};
@@ -16,10 +16,10 @@ pub enum GetLatestDriverVersionError {
 pub fn get_latest_driver_version(
     _config: &GetLatestDriverVersionConfig,
     driver_version_scraper_config: &DriverVersionScraperConfig,
-    driver_download_page: &DriverDownloadPage,
+    driver_page: &DriverPage,
     scriptable_output: bool,
 ) -> Result<(), GetLatestDriverVersionError> {
-    let driver_version = scrape_driver_version(driver_version_scraper_config, driver_download_page)
+    let driver_version = scrape_driver_version(driver_version_scraper_config, driver_page)
         .context(ScrapeDriverVersionSnafu)?;
 
     if !scriptable_output {

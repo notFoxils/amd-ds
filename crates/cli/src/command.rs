@@ -2,7 +2,7 @@ use std::path::Path;
 
 use amd_ds::{
     driver_version::DriverVersion,
-    request::driver_download_page::{RequestDriverDownloadPageError, request_driver_download_page},
+    request::{RequestDriverPageError, request_driver_page},
 };
 use snafu::{ResultExt, Snafu};
 
@@ -77,9 +77,7 @@ pub enum Command {
 #[derive(Debug, Snafu)]
 pub enum RunCommandError {
     #[snafu(display("failed to request the driver-download page"))]
-    RequestDriverDownloadPage {
-        source: RequestDriverDownloadPageError,
-    },
+    RequestDriverPage { source: RequestDriverPageError },
     #[snafu(transparent)]
     GetLatestDriverVersion { source: GetLatestDriverVersionError },
     #[snafu(transparent)]
@@ -92,14 +90,14 @@ pub enum RunCommandError {
 
 impl Command {
     pub fn run(&self, config: &CliConfig) -> Result<(), RunCommandError> {
-        let driver_download_page = request_driver_download_page(&config.driver_page_config)
-            .context(RequestDriverDownloadPageSnafu)?;
+        let driver_page =
+            request_driver_page(&config.driver_page_config).context(RequestDriverPageSnafu)?;
 
         Ok(match self {
             Self::GetLatestDriverVersion { scriptable_output } => get_latest_driver_version(
                 &config.command_config.get_latest_driver_version,
                 &config.scraper_config.driver_version,
-                &driver_download_page,
+                &driver_page,
                 *scriptable_output,
             )?,
             Self::CompareLatestDriverVersion {
@@ -108,14 +106,14 @@ impl Command {
             } => compare_latest_driver_version(
                 &config.command_config.compare_latest_driver_version,
                 &config.scraper_config.driver_version,
-                &driver_download_page,
+                &driver_page,
                 *scriptable_output,
                 comparison_driver_version,
             )?,
             Self::DownloadLatestDriver { driver_ouptut_path } => download_latest_driver(
                 &config.command_config.download_latest_driver,
                 &config.scraper_config.driver_download_link,
-                &driver_download_page,
+                &driver_page,
                 &driver_ouptut_path,
             )?,
         })

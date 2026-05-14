@@ -1,3 +1,5 @@
 pub use amd_ds_common::{InvalidRequestHeaders, RequestError, RequestHeaders};
 
-pub mod driver_download_page;
+mod driver_page;
+
+pub use driver_page::{RequestDriverPageError, request_driver_page};

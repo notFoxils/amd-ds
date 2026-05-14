@@ -2,7 +2,7 @@ use snafu::{ResultExt, Snafu};
 
 use crate::{
     config::DriverDownloadLinkScraperConfig,
-    driver_download_page::DriverDownloadPage,
+    driver_page::DriverPage,
     util::{
         get_anchor_link::{GetAnchorLinkError, get_anchor_link},
         select_first::{SelectFirst, SelectFirstError},
@@ -19,9 +19,9 @@ pub enum ScrapeDriverDownloadLinkError {
 
 pub fn scrape_driver_download_link(
     config: &DriverDownloadLinkScraperConfig,
-    driver_download_page: &DriverDownloadPage,
+    driver_page: &DriverPage,
 ) -> Result<String, ScrapeDriverDownloadLinkError> {
-    let selected_element = driver_download_page
+    let selected_element = driver_page
         .select_first(&config.anchor_selector)
         .context(SelectDriverDownloadAnchorSnafu)?;
 

@@ -4,7 +4,7 @@ use snafu::{ResultExt, Snafu};
 
 use crate::{
     config::DriverVersionScraperConfig,
-    driver_download_page::DriverDownloadPage,
+    driver_page::DriverPage,
     driver_version::{DriverVersion, from_str::ParseDriverVersionError},
     util::select_first::{SelectFirst, SelectFirstError},
 };
@@ -19,9 +19,9 @@ pub enum ScrapeDriverVersionError {
 
 pub fn scrape_driver_version(
     config: &DriverVersionScraperConfig,
-    driver_download_page: &DriverDownloadPage,
+    driver_page: &DriverPage,
 ) -> Result<DriverVersion, ScrapeDriverVersionError> {
-    let selected_element = driver_download_page
+    let selected_element = driver_page
         .select_first(&config.element_selector)
         .context(SelectDriverVersionElementSnafu)?;
 
