@@ -22,10 +22,10 @@ pub fn get_latest_driver_version(
     let driver_version = scrape_driver_version(driver_version_scraper_config, driver_page)
         .context(ScrapeDriverVersionSnafu)?;
 
-    if !scriptable_output {
-        println!("The latest driver version is {driver_version}.");
+    if scriptable_output {
+        print!("{driver_version}");
     } else {
-        print!("{driver_version}")
+        println!("The latest driver version is {driver_version}.");
     }
 
     Ok(())

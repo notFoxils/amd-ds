@@ -91,12 +91,12 @@ pub enum RunCommandError {
 impl Command {
     pub fn run(&self, config: &CliConfig) -> Result<(), RunCommandError> {
         let driver_page =
-            request_driver_page(&config.driver_page_config).context(RequestDriverPageSnafu)?;
+            request_driver_page(&config.driver_page).context(RequestDriverPageSnafu)?;
 
-        Ok(match self {
+        match self {
             Self::GetLatestDriverVersion { scriptable_output } => get_latest_driver_version(
-                &config.command_config.get_latest_driver_version,
-                &config.scraper_config.driver_version,
+                &config.command.get_latest_driver_version,
+                &config.scraper.version,
                 &driver_page,
                 *scriptable_output,
             )?,
@@ -104,18 +104,20 @@ impl Command {
                 comparison_driver_version,
                 scriptable_output,
             } => compare_latest_driver_version(
-                &config.command_config.compare_latest_driver_version,
-                &config.scraper_config.driver_version,
+                &config.command.compare_latest_driver_version,
+                &config.scraper.version,
                 &driver_page,
                 *scriptable_output,
                 comparison_driver_version,
             )?,
             Self::DownloadLatestDriver { driver_ouptut_path } => download_latest_driver(
-                &config.command_config.download_latest_driver,
-                &config.scraper_config.driver_download_link,
+                &config.command.download_latest_driver,
+                &config.scraper.download_link,
                 &driver_page,
-                &driver_ouptut_path,
+                driver_ouptut_path,
             )?,
-        })
+        }
+
+        Ok(())
     }
 }

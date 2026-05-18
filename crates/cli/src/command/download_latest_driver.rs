@@ -1,6 +1,6 @@
 use std::{
     fs::File,
-    io::{self, Read, Write},
+    io::{self, Write},
     path::Path,
 };
 
@@ -22,8 +22,6 @@ pub enum DownloadLatestDriverError {
     },
     #[snafu(display("failed to request the driver-download"))]
     RequestDriverDownload { source: RequestError },
-    #[snafu(display("failed to get the driver-download data from the request"))]
-    GetDriverDownloadRequestData { source: io::Error },
     #[snafu(display("failed to create the driver-download output file"))]
     CreateOutputFile { source: io::Error },
     #[snafu(display("failed to write to the driver-download output file"))]
@@ -42,10 +40,7 @@ pub fn download_latest_driver(
 
     let driver_download_request_data =
         request(&driver_download_link, &config.download_request_headers)
-            .context(RequestDriverDownloadSnafu)?
-            .bytes()
-            .collect::<Result<Vec<_>, io::Error>>()
-            .context(GetDriverDownloadRequestDataSnafu)?;
+            .context(RequestDriverDownloadSnafu)?;
 
     File::create(output_file_path)
         .context(CreateOutputFileSnafu)?

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use amd_ds_common::RequestHeaders;
 
 const DEFAULT_DRIVER_PAGE_URL: &str =
@@ -15,7 +17,7 @@ impl Default for DriverPageConfig {
     fn default() -> Self {
         Self {
             url: Box::from(DEFAULT_DRIVER_PAGE_URL),
-            request_headers: Default::default(),
+            request_headers: HashMap::default(),
         }
     }
 }

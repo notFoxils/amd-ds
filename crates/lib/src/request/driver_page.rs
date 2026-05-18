@@ -1,4 +1,7 @@
-use std::io::{self, Read};
+use std::{
+    io::{self, Read},
+    ops::Deref,
+};
 
 use amd_ds_common::{RequestError, request};
 use snafu::{ResultExt, Snafu};
@@ -19,6 +22,7 @@ pub fn request_driver_page(
     let mut page_content = String::new();
     request(&config.url, &config.request_headers)
         .context(RequestSnafu)?
+        .deref()
         .read_to_string(&mut page_content)
         .context(ReadSnafu)?;
 

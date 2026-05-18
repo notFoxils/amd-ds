@@ -2,7 +2,7 @@ use std::{
     collections::HashMap,
     error::Error,
     fmt::{self, Debug, Display, Formatter},
-    io::Read,
+    ops::Deref,
     str::FromStr,
 };
 
@@ -76,12 +76,14 @@ pub enum RequestError {
     InvalidStatusCode { status_code: StatusCode },
     #[snafu(display("recieved an invalid *sucess* code: {status_code}"))]
     InvalidSuccessCode { status_code: StatusCode },
+    #[snafu(display("failed to read the response body"))]
+    ReadBytes { source: ReqwestError },
 }
 
 pub fn request(
     request_url: &str,
     request_headers: &RequestHeaders,
-) -> Result<impl Read, RequestError> {
+) -> Result<impl Deref<Target = [u8]>, RequestError> {
     let request_headers = convert_to_headermap(request_headers).context(InvalidHeadersSnafu)?;
 
     let response = reqwest::blocking::Client::default()
@@ -104,5 +106,8 @@ pub fn request(
         .fail();
     }
 
-    Ok(response)
+    response
+        .bytes()
+        .map_err(ReqwestError)
+        .context(ReadBytesSnafu)
 }

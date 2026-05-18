@@ -15,7 +15,7 @@ pub struct SelectorError {
 impl From<scraper::error::SelectorErrorKind<'_>> for SelectorError {
     fn from(value: scraper::error::SelectorErrorKind<'_>) -> Self {
         Self {
-            message: format!("{}", value),
+            message: format!("{value}"),
         }
     }
 }

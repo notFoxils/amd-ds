@@ -8,10 +8,10 @@ pub enum SelectFirstError {
 }
 
 pub trait SelectFirst<'a>: Sized + scraper::selectable::Selectable<'a> {
-    fn select_first<'sel>(
+    fn select_first(
         self,
-        selector: &'sel scraper::Selector,
-    ) -> Result<<Self::Select<'sel> as Iterator>::Item, SelectFirstError> {
+        selector: &scraper::Selector,
+    ) -> Result<<Self::Select<'_> as Iterator>::Item, SelectFirstError> {
         self.select(selector)
             .next()
             .context(SelectorNonMatchingSnafu {

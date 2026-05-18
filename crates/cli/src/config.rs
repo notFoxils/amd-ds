@@ -5,21 +5,20 @@ use amd_ds::config::{
 use amd_ds_common::RequestHeaders;
 use snafu::{ResultExt, Snafu};
 use std::{collections::HashMap, fs, io, path::Path};
-use toml;
 
 #[derive(Debug, Default, serde::Deserialize)]
 #[serde(default)]
 pub struct CliConfig {
-    pub driver_page_config: DriverPageConfig,
-    pub scraper_config: ScraperConfig,
-    pub command_config: CommandConfig,
+    pub driver_page: DriverPageConfig,
+    pub scraper: ScraperConfig,
+    pub command: CommandConfig,
 }
 
 #[derive(Debug, Default, serde::Deserialize)]
 #[serde(default)]
 pub struct ScraperConfig {
-    pub driver_version: DriverVersionScraperConfig,
-    pub driver_download_link: DriverDownloadLinkScraperConfig,
+    pub version: DriverVersionScraperConfig,
+    pub download_link: DriverDownloadLinkScraperConfig,
     pub driver_release_notes_link: DriverReleaseNotesLinkScraperConfig,
 }
 

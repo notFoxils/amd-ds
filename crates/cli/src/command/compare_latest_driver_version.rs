@@ -24,7 +24,13 @@ pub fn compare_latest_driver_version(
     let driver_version = scrape_driver_version(driver_version_scraper_config, driver_page)
         .context(ScrapeDriverVersionSnafu)?;
 
-    if !scriptable_output {
+    #[allow(clippy::collapsible_else_if)]
+    if scriptable_output {
+        print!(
+            "{is_newer}",
+            is_newer = driver_version > *comparison_driver_version
+        );
+    } else {
         if driver_version > *comparison_driver_version {
             println!("There is a new driver version ({driver_version}) available.");
         } else {
@@ -37,11 +43,6 @@ pub fn compare_latest_driver_version(
                 }
             );
         }
-    } else {
-        print!(
-            "{is_newer}",
-            is_newer = driver_version > *comparison_driver_version
-        );
     }
 
     Ok(())
