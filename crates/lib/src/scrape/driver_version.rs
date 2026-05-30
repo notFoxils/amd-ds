@@ -2,11 +2,12 @@ use std::str::FromStr;
 
 use snafu::{ResultExt, Snafu};
 
+use amd_ds_common::select_first::{SelectFirst, SelectFirstError};
+
 use crate::{
     config::DriverVersionScraperConfig,
     driver_page::DriverPage,
     driver_version::{DriverVersion, from_str::ParseDriverVersionError},
-    util::select_first::{SelectFirst, SelectFirstError},
 };
 
 #[derive(Debug, Snafu)]

@@ -12,6 +12,8 @@ use reqwest::{
 };
 use snafu::{ResultExt, Snafu};
 
+pub mod select_first;
+
 pub type RequestHeaders = HashMap<Box<str>, Box<str>>;
 
 #[derive(Debug, Snafu)]

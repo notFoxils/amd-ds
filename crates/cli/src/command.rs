@@ -8,6 +8,7 @@ use snafu::{ResultExt, Snafu};
 
 mod compare_latest_driver_version;
 mod download_latest_driver;
+mod download_latest_release_notes;
 mod get_latest_driver_version;
 
 use crate::{
@@ -16,6 +17,9 @@ use crate::{
             CompareLatestDriverVersionError, compare_latest_driver_version,
         },
         download_latest_driver::{DownloadLatestDriverError, download_latest_driver},
+        download_latest_release_notes::{
+            DownloadLatestReleaseNotesError, download_latest_release_notes,
+        },
         get_latest_driver_version::{GetLatestDriverVersionError, get_latest_driver_version},
     },
     config::CliConfig,
@@ -60,8 +64,8 @@ pub enum Command {
         scriptable_output: bool,
     },
     #[command(
-        visible_alias = "dl",
-        about = "Scrape and download the latest driver-download link."
+        visible_alias = "dd",
+        about = "Scrape and download from the latest driver-download link."
     )]
     DownloadLatestDriver {
         #[arg(
@@ -71,6 +75,19 @@ pub enum Command {
             help = "Path to output the downloaded driver."
         )]
         driver_ouptut_path: Box<Path>,
+    },
+    #[command(
+        visible_alias = "dr",
+        about = "Scrape and download the release notes of the latest driver."
+    )]
+    DownloadLatestReleaseNotes {
+        #[arg(
+            default_value = "./release-notes.md",
+            short,
+            long,
+            help = "Path to output the downloaded release notes."
+        )]
+        release_notes_ouptut_path: Box<Path>,
     },
 }
 
@@ -86,6 +103,10 @@ pub enum RunCommandError {
     },
     #[snafu(transparent)]
     DownloadLatestDriver { source: DownloadLatestDriverError },
+    #[snafu(transparent)]
+    DownloadLatestReleaseNotes {
+        source: DownloadLatestReleaseNotesError,
+    },
 }
 
 impl Command {
@@ -115,6 +136,14 @@ impl Command {
                 &config.scraper.download_link,
                 &driver_page,
                 driver_ouptut_path,
+            )?,
+            Self::DownloadLatestReleaseNotes {
+                release_notes_ouptut_path,
+            } => download_latest_release_notes(
+                &config.command.download_latest_release_notes,
+                &config.scraper.release_notes_link,
+                &driver_page,
+                release_notes_ouptut_path,
             )?,
         }
 

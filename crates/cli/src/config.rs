@@ -19,16 +19,25 @@ pub struct CliConfig {
 pub struct ScraperConfig {
     pub version: DriverVersionScraperConfig,
     pub download_link: DriverDownloadLinkScraperConfig,
-    pub driver_release_notes_link: DriverReleaseNotesLinkScraperConfig,
+    pub release_notes_link: DriverReleaseNotesLinkScraperConfig,
 }
 
 #[derive(Debug, Default, serde::Deserialize)]
 #[serde(default)]
 pub struct CommandConfig {
-    pub download_latest_driver: DownloadLatestDriverConfig,
     pub get_latest_driver_version: GetLatestDriverVersionConfig,
     pub compare_latest_driver_version: CompareLatestDriverVersionConfig,
+    pub download_latest_driver: DownloadLatestDriverConfig,
+    pub download_latest_release_notes: DownloadLatestReleaseNotesConfig,
 }
+
+#[derive(Debug, Default, serde::Deserialize)]
+#[serde(default)]
+pub struct GetLatestDriverVersionConfig {}
+
+#[derive(Debug, Default, serde::Deserialize)]
+#[serde(default)]
+pub struct CompareLatestDriverVersionConfig {}
 
 #[derive(Debug, serde::Deserialize)]
 #[serde(default)]
@@ -50,13 +59,45 @@ impl Default for DownloadLatestDriverConfig {
     }
 }
 
-#[derive(Debug, Default, serde::Deserialize)]
-#[serde(default)]
-pub struct GetLatestDriverVersionConfig {}
+const DEFAULT_RELEASE_NOTES_CONTAINER_ELEMENT_SELECTOR: &str = ".content-wrapper:first-of-type .cmp-container__content:first-of-type .text:first-of-type .cmp-text:first-of-type";
 
-#[derive(Debug, Default, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 #[serde(default)]
-pub struct CompareLatestDriverVersionConfig {}
+pub struct DownloadLatestReleaseNotesConfig {
+    pub release_notes_page: ReleaseNotesPageConfig,
+    pub container_element_selector: scraper::Selector,
+}
+
+impl Default for DownloadLatestReleaseNotesConfig {
+    fn default() -> Self {
+        Self {
+            release_notes_page: ReleaseNotesPageConfig::default(),
+            container_element_selector: scraper::Selector::parse(
+                DEFAULT_RELEASE_NOTES_CONTAINER_ELEMENT_SELECTOR,
+            )
+            .unwrap(),
+        }
+    }
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(default)]
+pub struct ReleaseNotesPageConfig {
+    pub request_headers: RequestHeaders,
+}
+
+impl Default for ReleaseNotesPageConfig {
+    fn default() -> Self {
+        Self {
+            request_headers: HashMap::from([
+                (
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3",
+                ),
+            ].map(|(lhs, rhs)| (Box::from(lhs), Box::from(rhs)))),
+        }
+    }
+}
 
 #[derive(Debug, Snafu)]
 pub enum InitConfigError {

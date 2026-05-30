@@ -9,7 +9,9 @@ amd-ds-common = { path = "../common" }
 
 clap = { version = "4.5.57", features = ["derive"] }
 
-toml = { version = "1.1.2" }
+toml = "1.1.2"
+
+html2md = "0.2.15"
 
 scraper.workspace = true
 
